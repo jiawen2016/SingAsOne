@@ -1,0 +1,501 @@
+//
+//  DisplayRecordingsTableViewController.swift
+//  SingAsOne
+//
+//  Created by LaParure on 3/8/15.
+//  Copyright (c) 2015 Jia Wen Li. All rights reserved.
+//
+
+import UIKit
+import AVFoundation
+import AVKit
+
+class DisplayRecordingsTableViewController: UITableViewController, AudioConcatenatorDelegate {
+    var dataArr: [NSData]?{
+        didSet {
+            dispatch_async(dispatch_get_main_queue(), {
+                self.setStanza()
+                self.tableView.reloadData()
+            })
+        }
+    }
+    var synData: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    var dataName :[String] = Array()
+    var audioName :[String] = Array()
+    var dataLang : [String] = Array()
+    var dataUser : [String] = Array()
+    var dataStanza : [Int] = Array()
+    var stanzaSorted: [Int] = Array()
+    var numRowsPerStanza: [Int] = Array()
+    var rowsPerStanza:[[Int]] = Array()
+    var selectedRowsIndex : [Int] = Array()
+    var selectedDataNames : [String] = Array()
+    var refreshController:UIRefreshControl!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        synData.setObject(0, forKey: "synthesize")
+        tableView.estimatedRowHeight = tableView.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+        self.refreshController = UIRefreshControl()
+        self.refreshController.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        self.refreshController.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refreshController)
+    }
+    override func viewDidAppear(animated: Bool) {
+        self.refresh()
+        if let synthesized = synData.objectForKey("synthesize")? as? Int{
+            if synthesized == 1{
+                var alert = UIAlertView(title: "Save your song?",
+                    message: "",
+                    delegate:self,
+                    cancelButtonTitle: "Cancel")
+                    alert.addButtonWithTitle("Yes")
+                    alert.show()
+            }
+        }
+
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+    // MARK: - Table view data source
+
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        // #warning Potentially incomplete method implementation.
+        // Return the number of sections.
+        if stanzaSorted.count == 0{
+            return 0
+        }
+        return stanzaSorted.count + 1
+    }
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete method implementation.
+        // Return the number of rows in the section.
+        if(section  == stanzaSorted.count){
+            return 1
+        }
+        return numRowsPerStanza[section]+1
+    }
+    @IBAction private func refresh(sender: UIRefreshControl?) {
+        var query = PFQuery(className: "UserRecordings")
+        query.orderByDescending("objectId")
+        query.findObjectsInBackgroundWithBlock ({(objects:[AnyObject]!, error: NSError!) in
+            if(error == nil){
+                self.getAudioData(objects as [PFObject],{(arr) -> Void in
+                    dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                        self.dataArr = arr as [NSData]
+                        
+                        
+                    }
+                    sender?.endRefreshing()
+                })
+                //println(self.dataArr?.count)
+                // TODO: Hide HUD - Done
+                // Continue
+                // Set the table view data source / delegation
+                // Show objects - reloadData
+                
+            }
+            else{
+                
+                println("Error in retrieving \(error)")
+                // TODO: Error 0.5 - Hide HUD
+            }
+            
+        })//findObjectsInBackgroundWithblock - end
+        
+        // TODO: Show HUD - Loading...
+        sender?.endRefreshing()
+    }
+    func setStanza(){
+        stanzaSorted = dataStanza
+        numRowsPerStanza.removeAll(keepCapacity: false)
+        rowsPerStanza.removeAll(keepCapacity: false)
+        sort(&stanzaSorted)
+        var i = 0
+        var j=1
+        var tempStanza: [Int] = Array()
+        while i < stanzaSorted.count{
+            if(i==0 || stanzaSorted[i] != stanzaSorted[i-1]){
+                if(i != 0){
+                    numRowsPerStanza.append(j)
+                }
+                tempStanza.append(stanzaSorted[i])
+                j=1
+                
+            }
+            else{
+                j++
+                
+            }
+            i++
+            
+        }
+        numRowsPerStanza.append(j)
+        stanzaSorted = tempStanza
+       
+        for i in stanzaSorted{
+            var tempPerRow : [Int] = Array()
+            for(var j=0;j<dataStanza.count;j++){
+                if (dataStanza[j] == i){
+                    tempPerRow.append(j)
+              
+                }
+            }
+            rowsPerStanza.append(tempPerRow)
+        }
+        
+    }
+    
+    func refresh() {
+        refreshControl?.beginRefreshing()
+        refresh(refreshController)
+    }
+    func getAudioData(objects:[PFObject],handler:([NSData])->()) {
+        var arr:[NSData] = Array()
+        if dataArr != nil{
+            arr = self.dataArr!
+        }
+        var c = 0
+        for object in objects {
+            let audio = object["recording"] as PFFile
+             var name = audio.name
+            if contains(audioName,name){
+                c++
+                continue
+            }
+            audio.getDataInBackgroundWithBlock({
+                (audioData: NSData!, error: NSError!) -> Void in
+                if (error == nil) {
+                    arr.append(audioData)
+                    let lang = object["language"] as String
+                    self.dataLang.append(lang)
+                    let user = object["user"] as String
+                    self.dataUser.append(user)
+                    let stanza = object["stanza"] as Int
+                    self.dataStanza.append(stanza)
+                    self.audioName.append(name)
+                    let len = audio.name.utf16Count
+                    name = name.substringWithRange(Range<String.Index>(start: advance(name.endIndex, -5), end: name.endIndex))
+                    self.dataName.append(name)
+                                        //print(arr.count)
+                    c++
+                    if (c == objects.count){
+                        handler(arr)
+                    }
+                }
+                
+            })//getDataInBackgroundWithBlock - end
+            
+            
+        }//for - end
+       
+    }
+    var audioPlayer:AVAudioPlayer?
+    func playRecordings(){
+        for audioData in dataArr!{
+            var error: NSError?
+            audioPlayer = AVAudioPlayer(data: audioData, error: &error)
+            
+            if let err = error {
+                println("audioPlayer error: \(err.localizedDescription)")
+            } else {
+                audioPlayer?.play()
+                while(audioPlayer?.playing == true ){
+                    
+                }
+            }
+        }
+    }
+
+    
+    
+    func writeAllAudioDataFile(){
+        for i in selectedRowsIndex{
+            var audioData = dataArr![i]
+            var audioName = dataName[i]
+            selectedDataNames.append(audioName)
+            writeAudioDatatoFile(audioData,audioName:audioName)
+        
+        }
+    }
+    func concatAudioDataFiles(){
+        let concat = AudioConcatenator(
+            //fileDirectoryPath: NSBundle.mainBundle().resourcePath!,
+            fileDirectoryPath: applicationFilePath("", directory: "SingAsOne"),
+            delegate: self
+        )
+        sort(&selectedDataNames)
+        concat.mergeCAFs(selectedDataNames)
+
+        
+    }
+    func writeAudioDatatoFile(audioData:NSData,audioName:String){
+        applicationCreatFileAtPath(fileTypeDirectory: true, fileName: "SingAsOne", directory: "")
+        applicationCreatFileAtPath(fileTypeDirectory: false, fileName: audioName, directory: "SingAsOne")
+        applicationWriteDataToFileAtPath(dataTypeArray: true , content:audioData, fileName: audioName, directory: "SingAsOne")
+        
+    }
+    func applicationFilePath(fileName: String ,directory: String) ->String {
+        
+        var docuPath = applicationDocumentPath()
+        
+        if directory.isEmpty {
+            
+            return docuPath.stringByAppendingPathComponent(fileName)
+            
+        }else{
+            
+            return docuPath.stringByAppendingPathComponent("\(directory)/\(fileName)")
+            
+        }
+        
+    }
+    func applicationCreatFileAtPath(#fileTypeDirectory: Bool ,fileName: String ,directory: String) ->Bool{
+        
+        var filePath = applicationFilePath(fileName, directory: directory)
+        
+        if fileTypeDirectory {//普通文件（图片、plist、txt等等）
+            
+            return NSFileManager.defaultManager().createDirectoryAtPath(filePath, withIntermediateDirectories: true, attributes: nil, error: nil)
+            
+        }else{//文件夹
+            
+            return NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil)
+            
+        }
+        
+    }
+    func applicationWriteDataToFileAtPath(#dataTypeArray: Bool ,content:AnyObject ,fileName: String ,directory: String) -> Bool{
+        
+        var filePath = applicationFilePath(fileName, directory: directory)
+        
+        if dataTypeArray {
+            
+            return (content as NSData).writeToFile(filePath, atomically: true)
+            
+        }else{
+            
+            return (content as NSDictionary).writeToFile(filePath, atomically: true)
+            
+        }
+        
+    }
+    func applicationDocumentPath() ->String{
+        
+        let application = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        
+        let documentPathString = application[0] as String
+        
+        return documentPathString
+        
+    }
+    var destinationURL:String?
+    func audioConcatenationDidComplete(success: Bool, destinationPath:String) {
+        // Do something when you get the result status.
+        // Maybe fetch the file path here?
+        println("concat completed")
+        selectedDataNames.removeAll(keepCapacity: false)
+        selectedRowsIndex.removeAll(keepCapacity: false)
+        if (success){
+            destinationURL = destinationPath
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                // DO SOMETHING ON THE MAINTHREAD
+                var alert = UIAlertView(title: "Your song is completed!",
+                    message: "Listen to your song?",
+                    delegate:self,
+                    cancelButtonTitle: "Cancel")
+                alert.addButtonWithTitle("Yes")
+                alert.show()
+
+            })
+        }
+    }
+
+    func alertView(_alertView: UIAlertView,clickedButtonAtIndex buttonIndex:Int){
+        var name:NSString = _alertView.buttonTitleAtIndex(buttonIndex)
+        var title:NSString = _alertView.title
+        if(name.isEqualToString("Yes")){
+            
+            if(title.isEqualToString("Your song is completed!")){
+                synData.setObject(1, forKey: "synthesize")
+                performSegueWithIdentifier("playSong", sender: nil)
+            }
+            if(title.isEqualToString("Save your song?")){
+                //synData.setObject(0, forKey: "synthesize")
+                performSegueWithIdentifier("saveSong", sender: nil)
+       
+            }
+
+
+        }
+        else{
+             //synData.setObject(0, forKey: "synthesize")
+        }
+        
+        
+    }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "playSong"{
+            if let avpVC = segue.destinationViewController as? AVPlayerViewController{
+                dispatch_async(dispatch_get_main_queue()) {
+                    let url = NSURL(fileURLWithPath: self.destinationURL!)
+                    avpVC.player = AVPlayer(URL: url)
+                }
+            }
+            
+        }
+        if segue.identifier == "saveSong"{
+            if let saveVC = segue.destinationViewController as? SaveViewController{
+                dispatch_async(dispatch_get_main_queue()) {
+                    saveVC.url = self.destinationURL
+                }
+            }
+            
+        }
+
+    }
+
+   
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if(indexPath.section == stanzaSorted.count){
+            let cell = tableView.dequeueReusableCellWithIdentifier("synthesize", forIndexPath: indexPath) as SynTableViewCell
+            //var synthesized = synData.setObject(self.recordings, forKey: "recordings")
+            if let synthesized = synData.objectForKey("synthesize")? as? Int{
+                if(synthesized == 1 ){
+                    cell.updateUI()
+                    
+                }
+                else{
+                    cell.hideUI()
+                }
+                
+            }
+            else{
+                cell.hideUI()
+            }
+            return cell
+        }
+        var index = stanzaSorted[indexPath.section]
+
+        if(indexPath.row==0){
+            let cell = tableView.dequeueReusableCellWithIdentifier("titleStanza", forIndexPath: indexPath) as UITableViewCell
+            cell.textLabel?.text = "Stanza "+String(index+1)
+            return cell
+
+        }
+        let cell = tableView.dequeueReusableCellWithIdentifier("displayRecording", forIndexPath: indexPath) as RecordingTableViewCell
+        cell.index = rowsPerStanza[indexPath.section][indexPath.row-1]
+        cell.audioLang = dataLang[rowsPerStanza[indexPath.section][indexPath.row-1]]
+        cell.audioUser = dataUser[rowsPerStanza[indexPath.section][indexPath.row-1]]
+        cell.audioData = dataArr![rowsPerStanza[indexPath.section][indexPath.row-1]]
+        
+        //cell.accessoryType = .Checkmark
+        // Configure the cell...
+        
+        return cell
+    }
+    var selectedIndexPaths : [ NSIndexPath] = Array()
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if  indexPath.row == 0{
+            return
+        }
+        if let  selectedCell = tableView.cellForRowAtIndexPath(indexPath) as? RecordingTableViewCell{
+            if (selectedCell.accessoryType == UITableViewCellAccessoryType.None){
+            
+                selectedCell.accessoryType = .Checkmark
+                selectedRowsIndex.append(selectedCell.index!)
+                selectedIndexPaths.append(indexPath)
+                
+          
+            }else if (selectedCell.accessoryType == UITableViewCellAccessoryType.Checkmark){
+            
+                selectedCell.accessoryType = .None
+                for(var i = 0 ; i < selectedRowsIndex.count;i++){
+                    if (selectedRowsIndex[i] == selectedCell.index!){
+                        selectedRowsIndex.removeAtIndex(i)
+                        break
+                    }
+                }
+            
+            }
+            tableView.deselectRowAtIndexPath(indexPath, animated:false)
+        }
+        
+    }
+    
+    
+    @IBAction func synthesize(sender: AnyObject) {
+        for i in selectedIndexPaths{
+           if let  selectedCell = tableView.cellForRowAtIndexPath(i) as? RecordingTableViewCell{
+                 selectedCell.accessoryType = .None
+            }
+        }
+        selectedIndexPaths.removeAll()
+        //performSegueWithIdentifier("saveSong", sender: nil)
+        //var indexPath = NSIndexPath(forRow: 0,
+            //inSection: stanzaSorted.count)
+        //let cell = tableView.cellForRowAtIndexPath(indexPath) as SynTableViewCell
+        //cell.updateUI()
+        self.writeAllAudioDataFile()
+        concatAudioDataFiles()
+    }
+  
+    @IBAction func listenSong(sender: UIButton) {
+        performSegueWithIdentifier("playSong", sender: nil)
+    }
+    @IBAction func saveSong(sender: UIButton) {
+         performSegueWithIdentifier("saveSong", sender: nil)
+    }
+    /*
+    // Override to support conditional editing of the table view.
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Return NO if you do not want the specified item to be editable.
+        return true
+    }
+
+    */
+
+    /*
+    // Override to support editing the table view.
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            // Delete the row from the data source
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        } else if editingStyle == .Insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }    
+    }
+    */
+
+    /*
+    // Override to support rearranging the table view.
+    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
+
+    }
+    */
+
+    /*
+    // Override to support conditional rearranging of the table view.
+    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Return NO if you do not want the item to be re-orderable.
+        return true
+    }
+    */
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Get the new view controller using [segue destinationViewController].
+        // Pass the selected object to the new view controller.
+    }
+    */
+    
+}
