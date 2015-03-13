@@ -178,24 +178,6 @@
             </objects>
             <point key="canvasLocation" x="-294" y="79"/>
         </scene>
-        <!--Data View Controller-->
-        <scene sceneID="Ed0-nj-fwV">
-            <objects>
-                <viewController id="29B-D0-T0N" customClass="DataViewController" customModule="SingAsOne" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="exV-t9-gAm"/>
-                        <viewControllerLayoutGuide type="bottom" id="KxN-dN-cRz"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="dPt-nE-Pot">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="p4K-81-eBz" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1125" y="1779"/>
-        </scene>
         <!--Make Your Song-->
         <scene sceneID="eAh-X7-DIC">
             <objects>
@@ -509,7 +491,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="user" rowHeight="52" id="NcL-QX-4Yl">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="user" rowHeight="52" id="NcL-QX-4Yl" customClass="UserSongTableViewCell" customModule="SingAsOne" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NcL-QX-4Yl" id="07M-RU-kpi">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -558,7 +540,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shared" rowHeight="58" id="sKp-jw-gCS">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="shared" rowHeight="58" id="sKp-jw-gCS" customClass="SharedSongTableViewCell" customModule="SingAsOne" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sKp-jw-gCS" id="VPt-rO-4oX">
                                     <autoresizingMask key="autoresizingMask"/>
