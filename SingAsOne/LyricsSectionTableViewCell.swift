@@ -26,6 +26,7 @@ class LyricsSectionTableViewCell: UITableViewCell,UIPickerViewDataSource,UIPicke
     var langs:[[String]]?{
         didSet{
             stanzaLabel?.text = "Stanza " + String(index! + 1)
+            langText = pickerData[0][0]
            updateLyrics()
         }
     }
@@ -35,7 +36,7 @@ class LyricsSectionTableViewCell: UITableViewCell,UIPickerViewDataSource,UIPicke
         }
     }
     var langIndex = 0
-    var langText = ""
+    var langText  = ""
     var lyricsShown = ""
     func updateLyrics(){
         var lyr = langs![langIndex]

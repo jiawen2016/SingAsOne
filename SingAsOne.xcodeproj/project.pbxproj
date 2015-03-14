@@ -50,6 +50,17 @@
 		6A8D14991AB16FDD0048CBAE /* SynTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8D14981AB16FDD0048CBAE /* SynTableViewCell.swift */; };
 		6AB1AA411AAFA53F00D29744 /* RecordingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB1AA401AAFA53F00D29744 /* RecordingTableViewCell.swift */; };
 		6AB1AA441AAFD17500D29744 /* AudioConcatenator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB1AA431AAFD17500D29744 /* AudioConcatenator.swift */; };
+		6AE3685B1AB3B70F00E52CC6 /* WriteDataToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE3685A1AB3B70F00E52CC6 /* WriteDataToFile.swift */; };
+		6AE3685D1AB3D21900E52CC6 /* Avatar-Blank.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6AE3685C1AB3D21900E52CC6 /* Avatar-Blank.gif */; };
+		6AE368631AB3E42B00E52CC6 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE368621AB3E42B00E52CC6 /* UserProfileViewController.swift */; };
+		6AE368691AB3E99300E52CC6 /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE368681AB3E99300E52CC6 /* user.png */; };
+		6AE368731AB3F81C00E52CC6 /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE368721AB3F81C00E52CC6 /* microphone.png */; };
+		6AE368751AB3F88B00E52CC6 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE368741AB3F88B00E52CC6 /* play.png */; };
+		6AE368771AB3F8F700E52CC6 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE368761AB3F8F700E52CC6 /* stop.png */; };
+		6AE368791AB3FBE500E52CC6 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE368781AB3FBE500E52CC6 /* pause.png */; };
+		6AE3687B1AB4030E00E52CC6 /* rsz_synthesize.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE3687A1AB4030E00E52CC6 /* rsz_synthesize.png */; };
+		6AE3687D1AB4031700E52CC6 /* rsz_microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE3687C1AB4031700E52CC6 /* rsz_microphone.png */; };
+		6AE3687F1AB4033800E52CC6 /* rsz_headphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AE3687E1AB4033800E52CC6 /* rsz_headphone.png */; };
 		6AF890CE1AB23F420094AB5E /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF890CD1AB23F420094AB5E /* SaveViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -107,6 +118,17 @@
 		6A8D14981AB16FDD0048CBAE /* SynTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynTableViewCell.swift; sourceTree = "<group>"; };
 		6AB1AA401AAFA53F00D29744 /* RecordingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingTableViewCell.swift; sourceTree = "<group>"; };
 		6AB1AA431AAFD17500D29744 /* AudioConcatenator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioConcatenator.swift; sourceTree = "<group>"; };
+		6AE3685A1AB3B70F00E52CC6 /* WriteDataToFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WriteDataToFile.swift; sourceTree = "<group>"; };
+		6AE3685C1AB3D21900E52CC6 /* Avatar-Blank.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "Avatar-Blank.gif"; sourceTree = "<group>"; };
+		6AE368621AB3E42B00E52CC6 /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		6AE368681AB3E99300E52CC6 /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
+		6AE368721AB3F81C00E52CC6 /* microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphone.png; sourceTree = "<group>"; };
+		6AE368741AB3F88B00E52CC6 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
+		6AE368761AB3F8F700E52CC6 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
+		6AE368781AB3FBE500E52CC6 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
+		6AE3687A1AB4030E00E52CC6 /* rsz_synthesize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_synthesize.png; sourceTree = "<group>"; };
+		6AE3687C1AB4031700E52CC6 /* rsz_microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_microphone.png; sourceTree = "<group>"; };
+		6AE3687E1AB4033800E52CC6 /* rsz_headphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rsz_headphone.png; sourceTree = "<group>"; };
 		6AF890CD1AB23F420094AB5E /* SaveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +203,8 @@
 		6A1932541AA83E1100472F76 /* SingAsOne */ = {
 			isa = PBXGroup;
 			children = (
+				6AE3686B1AB3F2A900E52CC6 /* Lyrics */,
+				6AE3686A1AB3F29800E52CC6 /* Images */,
 				6A1932571AA83E1100472F76 /* AppDelegate.swift */,
 				6A19325B1AA83E1100472F76 /* Main.storyboard */,
 				6A19325E1AA83E1200472F76 /* Images.xcassets */,
@@ -194,7 +218,6 @@
 			isa = PBXGroup;
 			children = (
 				6AF890CD1AB23F420094AB5E /* SaveViewController.swift */,
-				6AB1AA431AAFD17500D29744 /* AudioConcatenator.swift */,
 				6A1932591AA83E1100472F76 /* RecordViewController.swift */,
 				6A13626A1AACE36400AF4414 /* DisplayRecordingsTableViewController.swift */,
 				6A1932791AA8B7E400472F76 /* LyricsViewController.swift */,
@@ -202,10 +225,6 @@
 				6A52419D1AA946DC00FA2AA1 /* DataViewController.swift */,
 				6A5241AC1AAA348500FA2AA1 /* ParseBridge.m */,
 				6A5241AB1AAA348500FA2AA1 /* SingAsOne-Bridging-Header.h */,
-				6A1932861AA9182300472F76 /* LetItGo1.txt */,
-				6A1932891AA926A300472F76 /* LetItGo2.txt */,
-				6A19328A1AA926A300472F76 /* LetItGo3.txt */,
-				6A1932851AA9182300472F76 /* LetItGo0.txt */,
 				6A1932561AA83E1100472F76 /* Info.plist */,
 				6A1932771AA8ABD300472F76 /* SongTableViewController.swift */,
 				6AB1AA401AAFA53F00D29744 /* RecordingTableViewCell.swift */,
@@ -213,6 +232,9 @@
 				6A53E5431AB345CA006E938D /* DisplaySongsTableViewController.swift */,
 				6A53E5451AB3842B006E938D /* UserSongTableViewCell.swift */,
 				6A53E5471AB38450006E938D /* SharedSongTableViewCell.swift */,
+				6AB1AA431AAFD17500D29744 /* AudioConcatenator.swift */,
+				6AE3685A1AB3B70F00E52CC6 /* WriteDataToFile.swift */,
+				6AE368621AB3E42B00E52CC6 /* UserProfileViewController.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -237,6 +259,33 @@
 				6A19326C1AA83E1200472F76 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6AE3686A1AB3F29800E52CC6 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				6AE3687C1AB4031700E52CC6 /* rsz_microphone.png */,
+				6AE3687A1AB4030E00E52CC6 /* rsz_synthesize.png */,
+				6AE3687E1AB4033800E52CC6 /* rsz_headphone.png */,
+				6AE368781AB3FBE500E52CC6 /* pause.png */,
+				6AE368761AB3F8F700E52CC6 /* stop.png */,
+				6AE368741AB3F88B00E52CC6 /* play.png */,
+				6AE368721AB3F81C00E52CC6 /* microphone.png */,
+				6AE3685C1AB3D21900E52CC6 /* Avatar-Blank.gif */,
+				6AE368681AB3E99300E52CC6 /* user.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		6AE3686B1AB3F2A900E52CC6 /* Lyrics */ = {
+			isa = PBXGroup;
+			children = (
+				6A1932861AA9182300472F76 /* LetItGo1.txt */,
+				6A1932891AA926A300472F76 /* LetItGo2.txt */,
+				6A19328A1AA926A300472F76 /* LetItGo3.txt */,
+				6A1932851AA9182300472F76 /* LetItGo0.txt */,
+			);
+			name = Lyrics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,12 +368,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AE3685D1AB3D21900E52CC6 /* Avatar-Blank.gif in Resources */,
+				6AE3687D1AB4031700E52CC6 /* rsz_microphone.png in Resources */,
+				6AE368791AB3FBE500E52CC6 /* pause.png in Resources */,
 				6A19325D1AA83E1200472F76 /* Main.storyboard in Resources */,
 				6A19328C1AA926A300472F76 /* LetItGo3.txt in Resources */,
 				6A1932621AA83E1200472F76 /* LaunchScreen.xib in Resources */,
 				6A1932871AA9182300472F76 /* LetItGo0.txt in Resources */,
+				6AE368771AB3F8F700E52CC6 /* stop.png in Resources */,
 				6A19325F1AA83E1200472F76 /* Images.xcassets in Resources */,
+				6AE368691AB3E99300E52CC6 /* user.png in Resources */,
+				6AE368751AB3F88B00E52CC6 /* play.png in Resources */,
+				6AE368731AB3F81C00E52CC6 /* microphone.png in Resources */,
+				6AE3687B1AB4030E00E52CC6 /* rsz_synthesize.png in Resources */,
 				6A19328B1AA926A300472F76 /* LetItGo2.txt in Resources */,
+				6AE3687F1AB4033800E52CC6 /* rsz_headphone.png in Resources */,
 				6A1932881AA9182300472F76 /* LetItGo1.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,9 +406,11 @@
 				6AB1AA411AAFA53F00D29744 /* RecordingTableViewCell.swift in Sources */,
 				6A53E5461AB3842B006E938D /* UserSongTableViewCell.swift in Sources */,
 				6A13626B1AACE36400AF4414 /* DisplayRecordingsTableViewController.swift in Sources */,
+				6AE368631AB3E42B00E52CC6 /* UserProfileViewController.swift in Sources */,
 				6AB1AA441AAFD17500D29744 /* AudioConcatenator.swift in Sources */,
 				6A52419E1AA946DC00FA2AA1 /* DataViewController.swift in Sources */,
 				6A1932781AA8ABD300472F76 /* SongTableViewController.swift in Sources */,
+				6AE3685B1AB3B70F00E52CC6 /* WriteDataToFile.swift in Sources */,
 				6A53E5481AB38450006E938D /* SharedSongTableViewCell.swift in Sources */,
 				6A8D14991AB16FDD0048CBAE /* SynTableViewCell.swift in Sources */,
 				6A1932801AA8D1A700472F76 /* LyricsSectionTableViewCell.swift in Sources */,

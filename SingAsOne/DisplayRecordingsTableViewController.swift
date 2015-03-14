@@ -223,10 +223,11 @@ class DisplayRecordingsTableViewController: UITableViewController, AudioConcaten
         
         }
     }
+    var handleFile = WriteDataToFile()
     func concatAudioDataFiles(){
         let concat = AudioConcatenator(
             //fileDirectoryPath: NSBundle.mainBundle().resourcePath!,
-            fileDirectoryPath: applicationFilePath("", directory: "SingAsOne"),
+            fileDirectoryPath: handleFile.getFilePath("", dirName: "SingAsOne"),
             delegate: self
         )
         sort(&selectedDataNames)
@@ -234,70 +235,15 @@ class DisplayRecordingsTableViewController: UITableViewController, AudioConcaten
 
         
     }
+    
     func writeAudioDatatoFile(audioData:NSData,audioName:String){
-        applicationCreatFileAtPath(fileTypeDirectory: true, fileName: "SingAsOne", directory: "")
-        applicationCreatFileAtPath(fileTypeDirectory: false, fileName: audioName, directory: "SingAsOne")
-        applicationWriteDataToFileAtPath(dataTypeArray: true , content:audioData, fileName: audioName, directory: "SingAsOne")
+        handleFile.creatFileAtPath(true, fileName: "SingAsOne", dirName: "")
+        handleFile.creatFileAtPath(false, fileName: audioName, dirName: "SingAsOne")
+        handleFile.writeData(audioData, fileName: audioName, dirName: "SingAsOne")
         
     }
-    func applicationFilePath(fileName: String ,directory: String) ->String {
-        
-        var docuPath = applicationDocumentPath()
-        
-        if directory.isEmpty {
-            
-            return docuPath.stringByAppendingPathComponent(fileName)
-            
-        }else{
-            
-            return docuPath.stringByAppendingPathComponent("\(directory)/\(fileName)")
-            
-        }
-        
-    }
-    func applicationCreatFileAtPath(#fileTypeDirectory: Bool ,fileName: String ,directory: String) ->Bool{
-        
-        var filePath = applicationFilePath(fileName, directory: directory)
-        
-        if fileTypeDirectory {//普通文件（图片、plist、txt等等）
-            
-            return NSFileManager.defaultManager().createDirectoryAtPath(filePath, withIntermediateDirectories: true, attributes: nil, error: nil)
-            
-        }else{//文件夹
-            
-            return NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil)
-            
-        }
-        
-    }
-    func applicationWriteDataToFileAtPath(#dataTypeArray: Bool ,content:AnyObject ,fileName: String ,directory: String) -> Bool{
-        
-        var filePath = applicationFilePath(fileName, directory: directory)
-        
-        if dataTypeArray {
-            
-            return (content as NSData).writeToFile(filePath, atomically: true)
-            
-        }else{
-            
-            return (content as NSDictionary).writeToFile(filePath, atomically: true)
-            
-        }
-        
-    }
-    func applicationDocumentPath() ->String{
-        
-        let application = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        
-        let documentPathString = application[0] as String
-        
-        return documentPathString
-        
-    }
-    var destinationURL:String?
+        var destinationURL:String?
     func audioConcatenationDidComplete(success: Bool, destinationPath:String) {
-        // Do something when you get the result status.
-        // Maybe fetch the file path here?
         println("concat completed")
         selectedDataNames.removeAll(keepCapacity: false)
         selectedRowsIndex.removeAll(keepCapacity: false)
@@ -335,7 +281,10 @@ class DisplayRecordingsTableViewController: UITableViewController, AudioConcaten
 
         }
         else{
-             //synData.setObject(0, forKey: "synthesize")
+            if(title.isEqualToString("Save your song?")){
+                synData.setObject(0, forKey: "synthesize")
+                
+            }
         }
         
         

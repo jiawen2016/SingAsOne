@@ -35,11 +35,12 @@ class DisplaySongsTableViewController: UITableViewController {
     var sharedUserName :[String] = Array()
     var refreshController:UIRefreshControl!
     var userName:String?
+    var currentUserName: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        userName = "Joe Smith"
+        userName = self.currentUserName.objectForKey("userName")? as? String
         self.refreshController = UIRefreshControl()
         self.refreshController.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.refreshController.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
@@ -52,20 +53,23 @@ class DisplaySongsTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    override func viewWillAppear(animated: Bool) {
+        userName = self.currentUserName.objectForKey("userName")? as? String
+    }
     override func viewDidAppear(animated: Bool) {
         refresh()
     }
 
     @IBAction private func refresh(sender: UIRefreshControl?) {
         var query = PFQuery(className: "UserSongs")
-        query.whereKey("user", equalTo:userName!)
+        query.whereKey("user", equalTo:self.currentUserName.objectForKey("userName")? as? String)
         query.findObjectsInBackgroundWithBlock ({(objects:[AnyObject]!, error: NSError!) in
             if(error == nil){
                 self.getAudioData(objects as [PFObject],{(arr) -> Void in
                     dispatch_async(dispatch_get_main_queue()) { () -> Void in
                         self.userDataArr = arr as [NSData]
                         query.whereKey("shared", equalTo:true)
-                        query.whereKey("user", notEqualTo:self.userName!)
+                        query.whereKey("user", notEqualTo:self.currentUserName.objectForKey("userName")? as? String)
                         query.findObjectsInBackgroundWithBlock ({(objects:[AnyObject]!, error: NSError!) in
                             if(error == nil){
                                 self.getSharedAudioData(objects as [PFObject],{(arr) -> Void in
@@ -125,6 +129,10 @@ class DisplaySongsTableViewController: UITableViewController {
             arr = self.userDataArr!
         }
         var c = 0
+        if objects.count==0{
+            handler(arr)
+            return
+        }
         for object in objects {
             let audio = object["recording"] as PFFile
             var name = audio.name
@@ -223,7 +231,9 @@ class DisplaySongsTableViewController: UITableViewController {
                 }
             }
             else{
-                if let cell = tableView.dequeueReusableCellWithIdentifier("user", forIndexPath: indexPath) as? UITableViewCell{
+                if let cell = tableView.dequeueReusableCellWithIdentifier("user", forIndexPath: indexPath) as? UserSongTableViewCell{
+                    cell.songName.text = userAudioName[indexPath.row-1]
+                    cell.playButton.tag = indexPath.row - 1
                     return cell
                 }
                 
@@ -239,8 +249,12 @@ class DisplaySongsTableViewController: UITableViewController {
                 }
             }
             else{
-                if let cell = tableView.dequeueReusableCellWithIdentifier("shared", forIndexPath: indexPath) as? UITableViewCell{
+                if let cell = tableView.dequeueReusableCellWithIdentifier("shared", forIndexPath: indexPath) as? SharedSongTableViewCell{
+                    cell.songName.text = sharedAudioName[indexPath.row-1]
+                    cell.userName.text = "by " + sharedUserName[indexPath.row-1]
+                    cell.playButton.tag = indexPath.row-1
                     return cell
+                    
                 }
                 
             }
@@ -262,30 +276,39 @@ class DisplaySongsTableViewController: UITableViewController {
                 let buttonPosition = bu.convertPoint(CGPointZero, toView: self.tableView)
                 if let indexPath = self.tableView.indexPathForRowAtPoint(buttonPosition){
                     //if let indexPath = tableView.indexPathForSelectedRow()?{
-                    /*
+                    
                     if let source = tableView.cellForRowAtIndexPath(indexPath) as? UserSongTableViewCell{
                         dispatch_async(dispatch_get_main_queue()) {
-                            let url = NSURL(fileURLWithPath: self.destinationURL!)
+                            var filePath = self.writeAudioDatatoFile(self.userDataArr![bu.tag], audioName: self.userAudioName[bu.tag])
+                            let url = NSURL(fileURLWithPath: filePath)
                             avpVC.player = AVPlayer(URL: url)
                         }
 
                         
                     }
-*/
+                    else if let source = tableView.cellForRowAtIndexPath(indexPath) as? SharedSongTableViewCell{
+                        dispatch_async(dispatch_get_main_queue()) {
+                            var filePath = self.writeAudioDatatoFile(self.sharedDataArr![bu.tag], audioName: self.sharedAudioName[bu.tag])
+                            let url = NSURL(fileURLWithPath: filePath)
+                            avpVC.player = AVPlayer(URL: url)
+                        }
+                        
+                        
+                    }
                 }
-/*
-                dispatch_async(dispatch_get_main_queue()) {
-                    let url = NSURL(fileURLWithPath: self.destinationURL!)
-                    avpVC.player = AVPlayer(URL: url)
-                }
-*/
             }
-            
         }
     }
-
-
+    
+    func writeAudioDatatoFile(audioData:NSData,audioName:String) -> String{
+        var handleFile = WriteDataToFile()
+        handleFile.creatFileAtPath(false, fileName: audioName, dirName: "SingAsOne")
+        return handleFile.writeData(audioData, fileName: audioName, dirName: "SingAsOne")
+        
+    }
+    
     @IBAction func playSong(sender: AnyObject) {
+        performSegueWithIdentifier("playSong", sender: sender)
     }
     /*
     // Override to support conditional editing of the table view.

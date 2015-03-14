@@ -27,6 +27,7 @@ class SaveViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     var synData: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    var currentUserName: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     var objectId:String?
     @IBOutlet weak var saveProgressBar: UIProgressView!
     @IBOutlet weak var shareButton: UIButton!
@@ -46,7 +47,7 @@ class SaveViewController: UIViewController {
             // trimmed out un-necessary code
             if(succeeded && error == nil){
                 var recorded = PFObject(className:"UserSongs")
-                recorded["user"] = "Joe Smith"
+                recorded["user"] = self.currentUserName.objectForKey("userName")? as? String
                 recorded["recording"] = file
                 recorded["fileName"] = recordName
                 recorded["shared"] = false
@@ -103,11 +104,21 @@ class SaveViewController: UIViewController {
                     for object in objects {
                         println(object.objectId)
                         object["shared"] = true
-                        object.saveInBackground()
+                        object.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError!) -> Void in
+                            if(succeeded && error == nil){
+                                self.shareButton.titleLabel?.text = "Shared!"
+                            }
+                            else{
+                                
+                                println("Error in uploading \(error)")
+                                // TODO: Error 0.5 - Hide HUD
+                            }
+                            
+                            }
+                        )
                     }
                 }
-                self.shareButton.titleLabel?.textAlignment = NSTextAlignment.Left
-                self.shareButton.titleLabel?.text = "Shared!"
+                
                 
             } else {
                 // Log details of the failure

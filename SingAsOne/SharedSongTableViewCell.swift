@@ -21,4 +21,7 @@ class SharedSongTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var userName: UILabel!
+    @IBOutlet weak var songName: UILabel!
 }

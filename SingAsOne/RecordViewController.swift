@@ -9,10 +9,12 @@
 import UIKit
 import AVFoundation
 
+
+
 class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecorderDelegate {
     var audioPlayer: AVAudioPlayer?
     var audioRecorder: AVAudioRecorder?
-    var recordingUrls: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    var userName: NSUserDefaults = NSUserDefaults.standardUserDefaults()
     var recordLang:String?
     var lyrics:String?
     var recordName:String?
@@ -23,7 +25,6 @@ class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecor
            recordName = String(self.index!)+".caf"
         }
     }
-
     @IBOutlet weak var lyricsLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var saveButton: UIButton!
@@ -68,32 +69,7 @@ class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecor
         } else {
             audioRecorder?.prepareToRecord()
         }
-        /*
-        if let history = recordingUrls.objectForKey("recordings")? as? NSArray{
-            recordings = NSMutableArray(array:history)
-            println(recordings.count)
-            for f in recordings{
-                var filePath = String(f as NSString)
-                println(filePath)
-                audioPlayer = AVAudioPlayer(contentsOfURL:NSURL(string: filePath), error: &error)
-                //audioPlayer?.delegate = self
-                
-                if let err = error {
-                    println("audioPlayer error: \(err.localizedDescription)")
-                } else {
-                    audioPlayer?.play()
-                    while((audioPlayer?.play()) != nil){
-                        
-                    }
-                }
-                
-                
-            }
-
-        }
-*/
         
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
     override func didReceiveMemoryWarning() {
@@ -109,19 +85,6 @@ class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecor
         
         if audioRecorder?.recording == true {
             audioRecorder?.stop()
-            /*
-            var object = PFObject(className: "recording")
-            object.addObject(audioRecorder?.url.absoluteString, forKey: "recording")
-            object.addObject("Five", forKey: "websiteRating")
-            object.save()
-            recordings.addObject((audioRecorder?.url.absoluteString)!)
-            recordingUrls.setObject(self.recordings, forKey: "recordings")
-            //println(audioRecorder?.url.absoluteString)
-            
-            
-            //recordingUrls.synchronize()
-            */
-            
         } else {
             audioPlayer?.stop()
         }
@@ -138,26 +101,6 @@ class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecor
         if audioRecorder?.recording == false {
             stopButton.enabled = true
             recordButton.enabled = false
-            /*
-            var error: NSError?
-            if let recorded = recordingUrls.objectForKey("recordings")? as? NSMutableArray{
-                println(recorded.count)
-                for f in recorded{
-                    var filePath = String(f as NSString)
-                    println(filePath)
-                    audioPlayer = AVAudioPlayer(contentsOfURL:NSURL(string: filePath), error: &error)
-                    audioPlayer?.delegate = self
-                    
-                    if let err = error {
-                        println("audioPlayer error: \(err.localizedDescription)")
-                    } else {
-                        audioPlayer?.play()
-                    }
-
-                    
-                }
-            }
-            */
             var error: NSError?
             audioPlayer = AVAudioPlayer(contentsOfURL: audioRecorder?.url,error: &error)
             if let err = error {
@@ -178,7 +121,7 @@ class RecordViewController: UIViewController,AVAudioPlayerDelegate, AVAudioRecor
             // trimmed out un-necessary code
             if(succeeded && error == nil){
                 var recorded = PFObject(className:"UserRecordings")
-                recorded["user"] = "Joe Smith"
+                recorded["user"] = self.userName.objectForKey("userName")? as? String
                 recorded["recording"] = file
                 recorded["language"] = self.recordLang?
                 recorded["stanza"] = self.index?
